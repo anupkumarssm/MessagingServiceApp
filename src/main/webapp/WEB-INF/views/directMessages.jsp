@@ -3,10 +3,28 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
+
 <body>
+<style> 
+.notification { 
+ padding: 20px 26px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+} 
+.notification .badge {
+  position: absolute;
+  top: 8px;
+  right: -10px;
+  padding: 5px 15px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
+</style>
 	<div class="row">
 		<div class="col-md-6">
-			<h4>Messages</h4>
+			<h4>Direct Messages</h4>
 		</div>
 		<div class="col-md-6">
 			<input type="text" class="form-control searchContacts"
@@ -14,7 +32,7 @@
 		</div>
 	</div>
 	<div class="card">
-		<div class="card-body">
+		<div class="card-body" style="height: 400px; overflow-y: scroll">
 			<ul class="list-group list-group-flush" style="cursor: pointer">
 				<c:forEach items="${getAllMessages}" var="messages">
 					<li class="list-group-item getusername" data-toMobile="${messages.toMobile}"><div
@@ -24,14 +42,17 @@
 									<img style="float: left; width: 55px; height: 55px;"
 										src="resources/images/usericon.png" />
 									<div class="content-heading">
-										<h5>${messages.toFullname}</h5>
-										<h5 style="border-radius: 5px solid #999">${messages.chatCount}</h5>
+
+										<a href="#" class="notification">
+											<h5>${messages.toFullname}</h5> <c:if test="${messages.messageCount ne '0'}"><span class="badge">${messages.messageCount}</span></c:if>
+										</a> 
 									</div>
 									<p style="clear: both; width: 1200px; color:green;"><b id="updateDate${messages.id}">Date : ${messages.timestamp}</b></p>
 								</div>
 							</div>
 						</div></li>
 				</c:forEach> 
+				<c:if test="${empty getAllMessages}"><h5 align="center">No Data</h5></c:if>
 			</ul>
 		</div>
 	</div>
@@ -63,7 +84,7 @@
 												var tousername = $(this).attr(
 														"data-toMobile");
 												//alert("tousername=="+tousername)
-												window.location.href = 'getMessages?toMobile='
+												window.location.href = 'get-direct-messages?toMobile='
 														+ tousername;
 											});
 
@@ -90,13 +111,13 @@
 												select : function(event, ui) {
 													$("#searchContacts").val(
 															ui.item.label); //ui.item is your object from the array
-													window.location.href = 'getMessages?toMobile='
+													window.location.href = 'get-direct-messages?toMobile='
 															+ ui.item.value;
 													return false;
 												}
 											});
 							
-							var intervalId = window.setInterval(function(){
+							 window.setInterval(function(){
 								 $.get( "checkUserOnlineOrOffLine")
 								  .done(function( data ) {
 									  $.each(data, function (index, itemData) {

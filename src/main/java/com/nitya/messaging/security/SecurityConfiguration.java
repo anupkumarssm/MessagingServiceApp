@@ -42,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			  http .csrf().disable() .httpBasic().and() .authorizeRequests()
 			  .antMatchers("/**").permitAll() .anyRequest().authenticated() .and()
 			  .formLogin() .loginPage("/login").failureUrl("/login?error=true")
-			  .defaultSuccessUrl("/messages") .usernameParameter("username")
+			  .defaultSuccessUrl("/contacts") .usernameParameter("username")
 			  .passwordParameter("password") .and().logout() .logoutRequestMatcher(new
 			  AntPathRequestMatcher("/logout"))
 			  .logoutSuccessUrl("/login?logout=true").and().exceptionHandling()

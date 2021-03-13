@@ -10,7 +10,7 @@
 				<div class="span4"> 
 					<div class="content-heading">
 						<h5>
-							<a href="messages"><i class="fas fa-arrow-left"> Messages&nbsp;&nbsp;</i></a><b style="color: green;">${contactDetails.timestamp}</b>&nbsp;&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;${contactDetails.to_fullname}&nbsp;&nbsp;&nbsp;<i class="fas fa-mobile"></i>(+91)&nbsp;${contactDetails.to_mobile}
+							<a href="direct-messages"><i class="fas fa-arrow-left"> Messages&nbsp;&nbsp;</i></a><b style="color: green;">${contactDetails.timestamp}</b>&nbsp;&nbsp;&nbsp;<i class="fas fa-user"></i>&nbsp;${contactDetails.to_fullname}&nbsp;&nbsp;&nbsp;<i class="fas fa-mobile"></i>(+91)&nbsp;${contactDetails.to_mobile}
 						</h5> 
 					</div>
 				</div>
@@ -23,7 +23,7 @@
 			<div class="row">
 				<div class="col-12 col-sm-10 col-md-10 col-lg-10 my-1">
 					<input class="form-control" type="text"
-						placeholder="Type a message for ${contactDetails.to_fullname}"
+						placeholder="Message ${contactDetails.to_fullname}"
 						id="textMessage">
 				</div>
 				<div class="col-12 col-sm-2 col-md-2 col-lg-2 my-1" align="center">

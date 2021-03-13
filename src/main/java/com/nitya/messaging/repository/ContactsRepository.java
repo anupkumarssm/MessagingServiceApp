@@ -12,4 +12,6 @@ public interface ContactsRepository extends JpaRepository<Contacts, Integer>{
 
 	List<Contacts> findByUsername(String username);
 
+	Contacts findByMobileAndUsername(String trim, String username);
+
 }

@@ -20,7 +20,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="card-body">
+		<div class="card-body" style="height: 450px; overflow-y: scroll">
 			<!-- Button to Open the Modal -->
 			<ul class="list-group list-group-flush">
 				<c:forEach items="${getAllContacts}" var="contacts">
@@ -44,14 +44,14 @@
 			<div class="modal-content">
 
 				<!-- Modal Header -->
-				<div class="modal-header">
-					<h4 class="modal-title">Add Contact</h4>
+				<div class="modal-header bg-primary">
+					<h4 class="modal-title text-white">Add Contact</h4>
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 
 				<!-- Modal body -->
 				<div class="modal-body">
-					<form action="addContacts" method="post" class="needs-validation"
+					<form action="addContacts" method="post" class="needs-validation" id="contactForm"
 						novalidate>
 						<div class="form-group textstyle">
 							<label for="username">Full Name:</label> <input type="text"
@@ -65,7 +65,7 @@
 						</div>
 						<div align="center">
 							<input type="submit"
-								class="btn btn-sm btn-info form-control col-sm-6" value="Save">
+								class="btn btn-sm btn-primary form-control col-sm-6" value="Save">
 						</div>
 					</form>
 				</div>
@@ -73,12 +73,31 @@
 		</div>
 	</div>
 	
- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+<!--  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script> -->
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.mobile').inputmask('999-999-9999');
+			$('#contactForm')
+			.bootstrapValidator(
+					{
+						fields : {
+							fullname : {
+								validators : {
+									notEmpty : {
+										message : '<div class="text-center text-danger">Full Name cannot be empty</div>'
+									},
+								}
+							},
+							mobile : {
+								validators : {
+									notEmpty : {
+										message : '<div class="text-center text-danger">Mobile cannot be empty</div>'
+									},
+								}
+							}
+						}
+					});
 		});
 	</script>
 </body>

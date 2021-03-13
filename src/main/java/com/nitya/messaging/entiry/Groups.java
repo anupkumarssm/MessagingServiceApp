@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 @Entity
-@Table(name = "groups")
+@Table(name = "groups_tb")
 public class Groups {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

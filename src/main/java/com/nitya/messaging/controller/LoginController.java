@@ -12,9 +12,12 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.nitya.messaging.entiry.Contacts;
 import com.nitya.messaging.entiry.UserProfile;
 import com.nitya.messaging.entiry.UserRole;
 import com.nitya.messaging.entiry.Users;
+import com.nitya.messaging.repository.ContactsRepository;
 import com.nitya.messaging.repository.UserProfileRepository;
 import com.nitya.messaging.repository.UserRepository;
 import com.nitya.messaging.repository.UserRoleRepository;
@@ -27,6 +30,10 @@ public class LoginController {
 	UserRepository userRepository;
 	@Autowired
 	UserRoleRepository userRoleRepository;
+	
+	@Autowired
+	ContactsRepository contactsRepository;
+	
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@RequestMapping(value = "/")
@@ -75,6 +82,15 @@ public class LoginController {
 			/* Users Role */
 			UserRole userRole = new UserRole(user.getUsername(), "ROLE_USER");
 			userRoleRepository.save(userRole);
+			
+			Contacts contacts = new Contacts();
+			contacts.setFullname(profile.getFullname());
+			contacts.setMobile(profile.getMobile());
+			contacts.setTimestamp(currentTime);
+			contacts.setUsername(username);
+			contactsRepository.save(contacts);
+			
+			
 			req.getSession().setAttribute("status", "1");
 		}
 		return "redirect:/login";

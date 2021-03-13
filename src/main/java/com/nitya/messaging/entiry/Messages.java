@@ -17,7 +17,7 @@ public class Messages {
 	private String toMobile;
 	private String toUsername;
 	private String status;
-	private String chatCount;
+	private String messageCount;
 	private String timestamp;
 	public int getId() {
 		return id;
@@ -55,11 +55,11 @@ public class Messages {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-	public String getChatCount() {
-		return chatCount;
+	public String getMessageCount() {
+		return messageCount;
 	}
-	public void setChatCount(String chatCount) {
-		this.chatCount = chatCount;
+	public void setMessageCount(String messageCount) {
+		this.messageCount = messageCount;
 	}
 	public String getTimestamp() {
 		return timestamp;

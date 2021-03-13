@@ -13,9 +13,9 @@ public class GroupMessages {
 	private int id;
 	private String groupId;
 	private String fromUsername;
-	private String toUsername;
 	private String textMessage;
 	private String timestamp;
+	private String flag;
 	public int getId() {
 		return id;
 	}
@@ -34,12 +34,6 @@ public class GroupMessages {
 	public void setFromUsername(String fromUsername) {
 		this.fromUsername = fromUsername;
 	}
-	public String getToUsername() {
-		return toUsername;
-	}
-	public void setToUsername(String toUsername) {
-		this.toUsername = toUsername;
-	}
 	public String getTextMessage() {
 		return textMessage;
 	}
@@ -52,5 +46,11 @@ public class GroupMessages {
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
 	}
+	public String getFlag() {
+		return flag;
+	}
+	public void setFlag(String flag) {
+		this.flag = flag;
+	} 
 	
 }

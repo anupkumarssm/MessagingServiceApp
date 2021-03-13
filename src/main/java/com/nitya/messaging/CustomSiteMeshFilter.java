@@ -10,6 +10,7 @@ public class CustomSiteMeshFilter extends ConfigurableSiteMeshFilter {
      .addExcludedPath("/get-messages")
      .addExcludedPath("/addMessage")
      .addExcludedPath("/getNewMessages")
+     .addExcludedPath("/getGroupMessage")
      .addExcludedPath("/getUpdatedMessage");
             
             

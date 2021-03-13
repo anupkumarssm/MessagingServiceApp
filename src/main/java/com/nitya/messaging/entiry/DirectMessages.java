@@ -18,6 +18,7 @@ public class DirectMessages {
 	private String toUsername;
 	private String textMessage;
 	private String timestamp;
+	private String flag;
 	public int getId() {
 		return id;
 	}
@@ -53,6 +54,14 @@ public class DirectMessages {
 	}
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+	public String getFlag() {
+		return flag;
+	}
+	public void setFlag(String flag) {
+		this.flag = flag;
 	} 
+	
+	
 	
 }
