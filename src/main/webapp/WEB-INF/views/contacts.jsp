@@ -11,12 +11,12 @@
 	<div class="card">
 		<div class="card-header">
 			<div class="row">
-				<div class="col-md-10">
+			<div class="col-12 col-sm-9 col-md-9 col-lg-9">
 					<h4>Contact List</h4>
 				</div>
-				<div class="col-md-2">
+			<div class="col-12 col-sm-2 col-md-2 col-lg-2">
 					<button type="button" class="btn btn-primary" data-toggle="modal"
-						data-target="#addContactModal">Add Contact</button>
+						data-target="#addContactModal"><i class="fa fa-user-plus" aria-hidden="true">&nbsp;Add Contact</i></button>
 				</div>
 			</div>
 		</div>
@@ -28,7 +28,7 @@
 							<div class="row">
 								<div class="span4">
 									<div class="content-heading">
-										<h5>${contacts.fullname}</h5>
+										<h5><i class="fa fa-user-plus" aria-hidden="true">&nbsp;${contacts.fullname}</i></h5>
 									</div>
 									<p style="clear: both; width: 1200px;">${contacts.mobile}</p>
 								</div>
@@ -71,10 +71,7 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	
-<!--  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/1000hz-bootstrap-validator/0.11.9/validator.min.js"></script> -->
+	</div> 
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$('.mobile').inputmask('999-999-9999');

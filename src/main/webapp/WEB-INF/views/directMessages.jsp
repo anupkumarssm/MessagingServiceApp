@@ -38,13 +38,10 @@
 					<li class="list-group-item getusername" data-toMobile="${messages.toMobile}"><div
 							class="paragraphs">
 							<div class="row">
-								<div class="span4">
-									<img style="float: left; width: 55px; height: 55px;"
-										src="resources/images/usericon.png" />
+								<div class="span4" id="spanDiv${messages.id}">
 									<div class="content-heading">
-
 										<a href="#" class="notification">
-											<h5>${messages.toFullname}</h5> <c:if test="${messages.messageCount ne '0'}"><span class="badge">${messages.messageCount}</span></c:if>
+										 <i class="fa fa-user-plus" aria-hidden="true">&nbsp;${messages.toFullname}</i> <c:if test="${messages.messageCount ne '0'}"><span class="badge" id="messageCountValue${messages.id}">${messages.messageCount}</span></c:if>
 										</a> 
 									</div>
 									<p style="clear: both; width: 1200px; color:green;"><b id="updateDate${messages.id}">Date : ${messages.timestamp}</b></p>
@@ -52,7 +49,7 @@
 							</div>
 						</div></li>
 				</c:forEach> 
-				<c:if test="${empty getAllMessages}"><h5 align="center">No Data</h5></c:if>
+				<c:if test="${empty getAllMessages}"><h5 align="center" style="color: gray;"><b>No Chats</b></h5></c:if>
 			</ul>
 		</div>
 	</div>
@@ -68,7 +65,7 @@
 	margin-top: 120px;
 	cursor: pointer;
 	position: absolute;
-	left: 50%;
+	left: 71%;
 	transform: translatex(-50%);
 }
 </style>
@@ -83,12 +80,9 @@
 											function() {
 												var tousername = $(this).attr(
 														"data-toMobile");
-												//alert("tousername=="+tousername)
 												window.location.href = 'get-direct-messages?toMobile='
 														+ tousername;
 											});
-
-							//alert("LLL")
 							$("#searchContacts")
 									.autocomplete(
 											{
@@ -100,11 +94,7 @@
 																	{
 																		"margin-top" : "155px",
 																		"margin-left" : "14px"
-																	});
-													/*  var data1 = [{
-													         label: "hi",
-													         value: "bye"
-													         }]; */
+																	}); 
 													var data = ${getAllContacts};
 													response(data);
 												},
@@ -120,8 +110,9 @@
 							 window.setInterval(function(){
 								 $.get( "checkUserOnlineOrOffLine")
 								  .done(function( data ) {
-									  $.each(data, function (index, itemData) {
+									  $.each(data, function (index, itemData) { 
 										   $("#updateDate"+itemData.id).html("Date : "+itemData.timestamp);
+										   $("#messageCountValue"+itemData.id).html(itemData.messageCount);
 										});
 								  }); 
 								}, 2000);

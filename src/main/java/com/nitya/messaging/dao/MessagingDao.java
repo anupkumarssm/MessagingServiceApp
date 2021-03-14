@@ -14,7 +14,8 @@ public class MessagingDao {
 	public List<Map<String, Object>> getDirectMessages(String username, String toMobile) {
 		try {
 			String query = "SELECT * FROM direct_messages dm where  dm.from_username=? and dm.to_username=? or dm.from_username=? and dm.to_username=?";
-			return jdbcTemplate.queryForList(query, username, toMobile, toMobile, username);
+			List<Map<String, Object>> listResult= jdbcTemplate.queryForList(query, username, toMobile, toMobile, username);
+			return listResult;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -52,7 +53,7 @@ public class MessagingDao {
 
 	public List<Map<String, Object>> getGroupList(String username) {
 		try {
-			String query = "SELECT g.group_name,g.id FROM groups_tb g,group_users gu where g.id=gu.group_id and gu.mobile=?";
+			String query = "select grp.*,c.fullname from (SELECT g.group_name,g.timestamp,g.id,g.created_by FROM groups_tb g,group_users gu where g.id=gu.group_id and gu.mobile=?) as grp join contacts c on c.mobile=grp.created_by group by id";
 			return jdbcTemplate.queryForList(query, username);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,7 +63,7 @@ public class MessagingDao {
 
 	public List<Map<String, Object>> getGroupMessageData(String groupId) {
 		try {
-			String query = "SELECT * FROM messagingserviceapp.group_messages where group_id=?";
+			String query = "SELECT * FROM group_messages where group_id=?";
 			return jdbcTemplate.queryForList(query, groupId);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -98,10 +99,10 @@ public class MessagingDao {
 		try {
 			String query = "SELECT * FROM direct_messages dm where 	dm.from_username=? AND dm.to_username=? and flag=1";
 			List<Map<String, Object>> resultList = jdbcTemplate.queryForList(query, tousername,username);
-			System.out.println("resultList=="+resultList);
 			 for(int i=0;i<resultList.size();i++) {
 				String updateQuery = "update direct_messages set flag=0 where id=? and flag=1";
 				jdbcTemplate.update(updateQuery, resultList.get(i).get("id").toString());
+				jdbcTemplate.update("update messages m set m.message_count=0 where m.username=? and m.to_username=?",username,tousername);
 			}
 			return resultList;
 	} catch (Exception e) {
@@ -111,10 +112,35 @@ public class MessagingDao {
 
 	public void updateMessageCount(String id,String fromUsername,String toUsername) {
 		try {
-			String query = "update messages m set m.message_count=(m.message_count+1) where m.username=? and m.to_username=?";
-			jdbcTemplate.update(query, fromUsername,toUsername);
+			  String query =
+			  "update messages m set m.message_count=(m.message_count+1) where m.username=? and m.to_username=?"
+			  ; jdbcTemplate.update(query, toUsername,fromUsername);
+			 
+			/*
+			 * int count=1; String query1 =
+			 * "select m.message_count from messages m where m.username=? and m.to_username=?"
+			 * ; String msgCount = (String) jdbcTemplate.queryForObject(query1, new Object[]
+			 * { fromUsername,toUsername }, String.class);
+			 * System.out.println("===="+msgCount); count =
+			 * count+Integer.parseInt(msgCount); String query =
+			 * "update messages m set m.message_count="
+			 * +count+" where m.username=? and m.to_username=?"; jdbcTemplate.update(query,
+			 * fromUsername,toUsername);
+			 */
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	public List<Map<String, Object>> countUnreadGroupMsg(String username) {
+		try {
+			String query = "SELECT count(gm.flag) as count,gm.group_id FROM group_users gu,group_messages gm where gu.mobile=? and gm.from_username != ? and gu.group_id=gm.group_id and gm.flag=1 group by gm.group_id";
+			return jdbcTemplate.queryForList(query,username, username);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+ 
+	 
 }

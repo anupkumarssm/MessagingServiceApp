@@ -1,20 +1,10 @@
 package com.nitya.messaging.entiry;
 
-import java.io.Serializable;
-import javax.persistence.*;
-import java.sql.Timestamp;
-
-
-/**
- * The persistent class for the user_profile database table.
- * 
- */
+import javax.persistence.*; 
+ 
 @Entity
 @Table(name="user_profile")
-@NamedQuery(name="UserProfile.findAll", query="SELECT u FROM UserProfile u")
-public class UserProfile implements Serializable {
-	private static final long serialVersionUID = 1L;
-
+public class UserProfile{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
@@ -22,8 +12,6 @@ public class UserProfile implements Serializable {
 	private String fullname;
 	private String mobile;
 	private String timestamp;
-	public UserProfile() {
-	}
 	public int getId() {
 		return id;
 	}
@@ -53,9 +41,6 @@ public class UserProfile implements Serializable {
 	}
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
-	}
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	} 
 	
 }

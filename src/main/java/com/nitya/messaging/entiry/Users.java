@@ -1,19 +1,10 @@
 package com.nitya.messaging.entiry;
-
-import java.io.Serializable;
+ 
 import javax.persistence.*;
-
-
-/**
- * The persistent class for the user database table.
- * 
- */
+ 
 @Entity 
 @Table(name = "users")
-@NamedQuery(name="Users.findAll", query="SELECT u FROM Users u")
-public class Users implements Serializable {
-	private static final long serialVersionUID = 1L;
-
+public class Users{
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;

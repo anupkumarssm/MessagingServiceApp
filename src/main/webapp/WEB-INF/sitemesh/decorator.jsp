@@ -27,10 +27,26 @@
 	<script type="text/javascript" src="resources/js/bootstrapValidator.min.js"></script>
 <style>
 body {
-	background-color: #74EBD5;
-	background-image: linear-gradient(90deg, #74EBD5 0%, #9FACE6 100%);
-	min-height: 100vh;
+	background-color: #74991e; 
 }
+.welcomeText {  
+            text-align: center; 
+            color: white; 
+            font-size: 1em; 
+            transition: 0.5s; 
+            font-family: Arial, Helvetica, sans-serif; 
+            text-shadow: 0 1px 0 #ccc, 0 2px 0 #ccc,  
+                0 10px 10px rgba(0, 0, 0, 0.5); 
+        } 
+        .welcomeText:hover { 
+            text-shadow: 0 1px 0 #ccc, 0 2px 0 #ccc, 
+                0 3px 0 #ccc, 0 4px 0 #ccc, 
+                0 5px 0 #ccc, 0 6px 0 #ccc, 
+                0 7px 0 #ccc, 0 8px 0 #ccc, 
+                0 9px 0 #ccc, 0 10px 0 #ccc, 
+                0 11px 0 #ccc, 0 12px 0 #ccc, 
+                0 20px 30px rgba(0, 0, 0, 0.5); 
+        }
 </style>
  <style>
 ::-webkit-scrollbar {
@@ -70,6 +86,7 @@ input::placeholder {
 </head>
 <body class="d-flex flex-column min-vh-100">
 	<div class="container my-4">
+	<sec:authorize access="hasAnyRole('USER')">
 		<nav class="navbar navbar-expand-lg navbar-light bg-primary"
 			style="background-color: #ccccff">
 
@@ -91,27 +108,18 @@ input::placeholder {
 						href="group-messages"><i class="fas fa-users">&nbsp;Group&nbsp;Messages</i></a></li>
 						<li class="nav-item"><a class="nav-link text-white"
 						href="contacts"><i class="fas fa-address-book">&nbsp;Contacts</i></a></li>
-				</ul>
-				<sec:authorize access="hasAnyRole('USER')">
-				
+				</ul> 
 				<ul class="navbar-nav w-100">
-				<li class="nav-item" style="width: 150px;"></li>
+				<li class="nav-item" style="width: auto;"></li>
 					<li class="nav-item">
-					<span  ><b>Welcome&nbsp;:</b>&nbsp;${userDetials.fullname}</span>
+					<span class="welcomeText"><b>Welcome</b>&nbsp;:&nbsp;${userDetials.fullname}</span>
 					</li>
 					</ul>
-				
-				
-				 
-					<a class="nav-itemb text-white" href="logOut" ><i class="fas fa-sign-out-alt" style="color: red;">&nbsp;Logout</i>
-					</a>
-				</sec:authorize>
-				<sec:authorize access="!hasAnyRole('USER')">
-					<a href="login" class="nav-itemb text-white"><i
-						class="fas fa-sign-in-alt">&nbsp;Login </i></a>
-				</sec:authorize>
+					<a class="nav-itemb text-white" href="logOut" ><i class="fas fa-sign-out-alt" style="color:red;">&nbsp;Logout</i>
+					</a> 
 			</div>
 		</nav>
+		</sec:authorize>
 		<sitemesh:write property="body" />
 	</div>
 </body>

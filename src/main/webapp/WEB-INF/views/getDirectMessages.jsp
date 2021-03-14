@@ -41,21 +41,41 @@
 							element.scrollTop = element.scrollHeight;
 						setInterval(function(){ 
 							var tousername = '${contactDetails.to_mobile}';
+							var userName = '${username}';  
 								$.get( "directMessageListener", {tousername:tousername})
 								  .done(function( data) {
-									  console.log("==directMessageListener==="+data.length);
 									  if(data.length != 0){
 										  $.each(data, function (index, itemData) {
-										  var reciverBoxDiv = $(' <div class="media w-50 ml-auto mb-3"> <div class="media-body"> <div class="bg-primary rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-white">'+itemData.text_message+'</p> </div> <p class="small text-muted">Date :'+itemData.timestamp+'</p> </div> </div>');
-										  $('#mainMessageBox').append(reciverBoxDiv); 
+									   if(userName == itemData.from_username){
+												  var mySecondDiv = $('<div class="media w-50 mb-3"> <i class="fas fa-user">(Me)</i> <div class="media-body ml-3"> <div class="bg-light rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-muted">'
+															+ itemData.text_message
+															+ '</p> </div> <p class="small text-muted">Date :'+itemData.timestamp+'</p> </div></div>');
+													$('#mainMessageBox').append(
+															mySecondDiv); 
+											  }else{
+												  var reciverBoxDiv = $(' <div class="media w-50 ml-auto mb-3"> <div class="media-body"> <div class="bg-primary rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-white">'+itemData.text_message+'</p> </div> <p class="small text-muted">Date :'+itemData.timestamp+'</p> </div> </div>');
+												  $('#mainMessageBox').append(reciverBoxDiv); 
+											  }
+											  
+										  
 										  });
 										  var element = document.getElementById("chat-box");
 											element.scrollTop = element.scrollHeight;
 									  }
 								  }); 
-							}, 3000);
+							}, 1000);
 							
 							$(document).on("click","#sendBtn",function() {
+								var currentdate = new Date(); 
+								var month = (currentdate.getMonth()+1);
+								if(month < 10){
+									month = "0"+month;
+								}  
+							    var datetime = currentdate.getFullYear() + "-"   + month  + "-" + currentdate.getDate() + " "
+							                + currentdate.getHours() + ":"  
+							                + currentdate.getMinutes() + ":" 
+							                + currentdate.getSeconds();
+							                
 												var textMessage = $(
 														"#textMessage").val();
 												if (textMessage != '') {
@@ -64,16 +84,16 @@
 													element.scrollTop = element.scrollHeight;
 													
 													$.get( "addDirectMessage",{
-														toFullname: "${contactDetails.to_fullname}",
-														toMobile: " ${contactDetails.to_mobile}",
-														toUsername: "${contactDetails.to_mobile}",
-														textMessage : textMessage
+														toFullname:"${contactDetails.to_fullname}",
+														toMobile:" ${contactDetails.to_mobile}",
+														toUsername:"${contactDetails.to_mobile}",
+														textMessage:textMessage
 															  })
 													  .done(function( data ) { 
 														  if(data == "1"){
-															  var mySecondDiv = $('<div class="media w-50 mb-3"> <i class="fas fa-user"></i> <div class="media-body ml-3"> <div class="bg-light rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-muted">'
+															  var mySecondDiv = $('<div class="media w-50 mb-3"> <i class="fas fa-user">(Me)</i> <div class="media-body ml-3"> <div class="bg-light rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-muted">'
 																		+ textMessage
-																		+ '</p> </div> <p class="small text-muted">Date : YYYY-MM-DD HH:MM:SS</p> </div></div>');
+																		+ '</p> </div> <p class="small text-muted">Date : '+datetime+'</p> </div></div>');
 																$('#mainMessageBox').append(
 																		mySecondDiv);
 																 var element = document.getElementById("chat-box");
@@ -92,25 +112,24 @@
 		function getDirectMessageFunc(){
 			var userName = '${username}';  
 			var tousername = '${contactDetails.to_mobile}';
-			$.get( "getDirectMessagesData", { tousername : tousername} )
+			$.get( "getDirectMessagesData", { tousername:tousername} )
 			  .done(function( data ) {
 				  $('#mainMessageBox').empty();
 				  $.each(data, function (index, itemData) {
 					  if(userName == itemData.from_username){
-						  var mySecondDiv = $('<div class="media w-50 mb-3"> <i class="fas fa-user"></i> <div class="media-body ml-3"> <div class="bg-light rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-muted">'
+						  var mySecondDiv = $('<div class="media w-50 mb-3"> <i class="fas fa-user">(Me)</i> <div class="media-body ml-3"> <div class="bg-light rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-muted">'
 									+ itemData.text_message
-									+ '</p> </div> <p class="small text-muted">Date :'+itemData.timestamp+'</p> </div></div>');
+									+ '</p> </div> <p class="small text-muted">Date : '+itemData.timestamp+'</p> </div></div>');
 							$('#mainMessageBox').append(
 									mySecondDiv); 
 					  }else{
-						  var reciverBoxDiv = $(' <div class="media w-50 ml-auto mb-3"> <div class="media-body"> <div class="bg-primary rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-white">'+itemData.text_message+'</p> </div> <p class="small text-muted">Date :'+itemData.timestamp+'</p> </div> </div>');
+						  var reciverBoxDiv = $(' <div class="media w-50 ml-auto mb-3"> <div class="media-body"> <div class="bg-primary rounded py-2 px-3 mb-2"> <p class="text-small mb-0 text-white">'+itemData.text_message+'</p> </div> <p class="small text-muted">Date : '+itemData.timestamp+'</p> </div> </div>');
 						  $('#mainMessageBox').append(reciverBoxDiv); 
 					  }
 					   $("#updateDate"+itemData.id).html("Date : "+itemData.timestamp);
 					});
 				  var element = document.getElementById("chat-box");
-					element.scrollTop = element.scrollHeight;
-				//alert( "Data Loaded: " + data );
+					element.scrollTop = element.scrollHeight; 
 			  }); 
 			
 		}

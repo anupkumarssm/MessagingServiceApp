@@ -7,8 +7,23 @@
 <meta charset="ISO-8859-1">
 </head>
 <body> 
-
-
+<style> 
+.notification { 
+ padding: 20px 26px;
+  position: relative;
+  display: inline-block;
+  border-radius: 2px;
+} 
+.notification .badge {
+  position: absolute;
+  top: 8px;
+  right: -10px;
+  padding: 5px 15px;
+  border-radius: 50%;
+  background-color: red;
+  color: white;
+}
+</style>
 	<div class="card">
 		<div class="card-body">
 			<div class="row">
@@ -16,20 +31,18 @@
 					<div class="card">
 						<div class="card-header">
 							<button type="button" class="btn btn-primary form-control" data-toggle="modal"
-								data-target="#createGroupModal">Create Group</button>
+								data-target="#createGroupModal"><i class="fa fa-users" aria-hidden="true">&nbsp;Create Group</i></button>
 						</div>
 						<div class="card-body" style="height: 400px; overflow-y: scroll">
 							<ul class="list-group list-group-flush" style="cursor: pointer">
 							<c:forEach items="${getGroupList}" var="getGroups">
-								<li id="activeLi${getGroups.id}" class="list-group-item getusername activeLi" onclick="getGroupId('${getGroups.id}','${getGroups.group_name}')"><div
+								<li id="activeLi${getGroups.id}" class="list-group-item getusername activeLi" data-grpId="${getGroups.id}" onclick="getGroupId('${getGroups.id}','${getGroups.group_name}')"><div
 										class="paragraphs">
 										<div class="row">
 											<div class="span4">
-												<!-- <img style="float: left; width: 55px; height: 55px;"
-													src="resources/images/usericon.png" /> -->
 												<div class="content-heading">
-													<i class="fas fa-user">&nbsp;&nbsp;<b>${getGroups.group_name}</b></i><br>
-													<p style="font-family:'Courier New'"><b>Create By :</b> ${getGroups.group_name} <br> <b> Date :</b> HH:MM:SS </p>
+													<i class="fas fa-users">&nbsp;&nbsp;<b>${getGroups.group_name}</b><a href="#" class="notification"><span class="badge" id="messageCountValue${getGroups.id}"></span></a></i><br>
+													<p style="font-family:'Courier New'"><b>Create By :</b> ${getGroups.fullname} <br> <b> Date :</b> ${getGroups.timestamp} </p>
 												</div>
 											</div>
 										</div>
@@ -93,6 +106,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#activeLi${top1Group.id}").addClass("active");   
+			 $("#messageCountValue${top1Group.id}").addClass("active");   
 			$('.select-multiple-users').select2();
 			 $.get( "getGroupMessage", { groupId: "${top1Group.id}"} )
 			  .done(function( data ) {
@@ -102,8 +116,10 @@
 			 
 			 $(".activeLi").click(function () {
 				    $(".activeLi").removeClass("active");
-				    // $(".tab").addClass("active"); // instead of this do the below 
 				    $(this).addClass("active");   
+				    var grpId=$(this).attr("data-grpId");
+				    $("#messageCountValue"+grpId).html('');
+				    $("#messageCountValue"+grpId).addClass("active");   
 				});
 			 
 				$('#createGroupForm')
@@ -127,6 +143,15 @@
 							}
 						});
 			 
+				
+				 window.setInterval(function(){
+					 $.get( "countUnreadGroupMsg")
+					  .done(function( data ) {
+						  $.each(data, function (index, itemData) {
+							   $("#messageCountValue"+itemData.group_id).html(itemData.count);
+							});
+					  }); 
+					}, 2000);
 		});
 	</script>
 </body>

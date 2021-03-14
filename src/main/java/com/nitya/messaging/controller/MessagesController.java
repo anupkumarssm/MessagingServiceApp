@@ -31,7 +31,6 @@ import com.nitya.messaging.repository.GroupUsersRepository;
 import com.nitya.messaging.repository.GroupsRepository;
 import com.nitya.messaging.repository.MessagesRepository;
 import com.nitya.messaging.repository.UserProfileRepository;
-import com.nitya.messaging.repository.UserRoleRepository;
 
 @Controller
 public class MessagesController {
@@ -69,6 +68,7 @@ public class MessagesController {
 		String username = req.getUserPrincipal().getName();
 		model.addAttribute("getAllContacts", contactsRepository.findByUsername(username));
 		messagingDao.updateTime(username, sdf.format(timestamp));
+		req.getSession().setAttribute("userDetials", userProfileRepository.findByUsername(username));
 		return "contacts";
 	}
 
@@ -100,12 +100,14 @@ public class MessagesController {
 
 	@RequestMapping(value = "/get-direct-messages")
 	public String getMessages(HttpServletRequest req, Model model) {
+		if (req.getUserPrincipal() == null)
+			return "redirect:login";
 		String username = req.getUserPrincipal().getName();
 		String toMobile = req.getParameter("toMobile");
-		System.out.println("toMobile===" + toMobile);
+		messagingDao.updateTime(username,"Online");
 		model.addAttribute("contactDetails", messagingDao.getConatDetails(toMobile.trim(), username));
-		// model.addAttribute("directMessages",messagingDao.getDirectMessages(username.trim(),toMobile.trim()));
 		model.addAttribute("username",username);
+		req.getSession().setAttribute("userDetials", userProfileRepository.findByUsername(username));
 		return "getDirectMessages";
 	}
 
@@ -114,9 +116,7 @@ public class MessagesController {
 	public List<Map<String, Object>> getDirectMessagesData(HttpServletRequest req, Model model) {
 		String username = req.getUserPrincipal().getName();
 		String tousername = req.getParameter("tousername");
-		System.out.println("getUpdated_Message---" + tousername);
-		List<Map<String, Object>> directMessageList = messagingDao.getDirectMessages(username, tousername);
-		System.out.println("directMessageList----" + directMessageList); 
+		List<Map<String, Object>> directMessageList = messagingDao.getDirectMessages(username, tousername.trim());
 		return directMessageList;
 	}
 
@@ -125,9 +125,7 @@ public class MessagesController {
 	public List<Map<String, Object>> directMessageListener(HttpServletRequest req, Model model) {
 		String username = req.getUserPrincipal().getName();
 		String tousername = req.getParameter("tousername");
-		System.out.println("getUpdatedMessage");
-		List<Map<String, Object>> getLatestDirectMessageList = messagingDao.getLatestDirectMessage(username, tousername);
-		System.out.println("getLatestDirectMessageList----" + getLatestDirectMessageList);
+		List<Map<String, Object>> getLatestDirectMessageList = messagingDao.getLatestDirectMessage(username.trim(), tousername.trim());
 		model.addAttribute(username, username);
 		return getLatestDirectMessageList;
 	}
@@ -136,10 +134,8 @@ public class MessagesController {
 	@RequestMapping(value = "/addDirectMessage")
 	public int addMessage(HttpServletRequest req, Messages messages, DirectMessages dirMessages, Model model) {
 		String username = req.getUserPrincipal().getName();
-		System.out.println("Username : " + username);
 		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 		String currentTime = sdf.format(timestamp);
-		System.out.println("currentTime===" + currentTime);
 		DirectMessages directMessages = new DirectMessages();
 		Messages msg = messagesRepository.findByToUsername(messages.getToMobile().trim());
 		if (msg == null) {
@@ -159,9 +155,6 @@ public class MessagesController {
 		directMessages.setTimestamp(currentTime);
 		directMessages.setFlag("1");
 		directMessagesRepository.save(directMessages);
-		// model.addAttribute("directMessages",messagingDao.getNewDirectMessages(username,messages.getToUsername()));
-		// model.addAttribute("username",username);
-		// model.addAttribute("contactDetails",messagingDao.getConatDetails(messages.getToUsername().trim(),username));
 		return 1;
 	}
 
@@ -169,7 +162,6 @@ public class MessagesController {
 	public String getUpdatedMessage(HttpServletRequest req, Model model) {
 		String username = req.getUserPrincipal().getName();
 		String tousername = req.getParameter("tousername");
-		System.out.println("getUpdatedMessage");
 		model.addAttribute("directMessages", messagingDao.getDirectMessages(username, tousername));
 		model.addAttribute("username", username);
 		return "directMessage";
@@ -204,26 +196,6 @@ public class MessagesController {
 		return json_arr.toString();
 	}
 
-	@RequestMapping(value = "/getNewMessages")
-	public String getNewMessages(HttpServletRequest req, Model model) {
-		String username = req.getUserPrincipal().getName();
-		String toMobile = req.getParameter("tousername");
-		model.addAttribute("contactDetails", messagingDao.getConatDetails(toMobile.trim(), username));
-		model.addAttribute("directMessages", messagingDao.getDirectMessages(username.trim(), toMobile.trim()));
-		model.addAttribute("username", username);
-		return "directMessage";
-	}
-
-	@ResponseBody
-	@RequestMapping(value = "/getNewMessagesTexts")
-	public List<Map<String, Object>> getNewMessagesTexts(HttpServletRequest req, Model model) {
-		String username = req.getUserPrincipal().getName();
-		String toMobile = req.getParameter("tousername");
-		model.addAttribute("directMessages", messagingDao.getDirectMessages(username.trim(), toMobile.trim()));
-		System.out.println("+" + messagingDao.getDirectMessages(username.trim(), toMobile.trim()));
-		return messagingDao.getDirectMessages(username.trim(), toMobile.trim());
-	}
-
 	@RequestMapping(value = "/group-messages")
 	public String groupMessages(HttpServletRequest req, Model model) {
 		if (req.getUserPrincipal() == null)
@@ -233,6 +205,7 @@ public class MessagesController {
 		model.addAttribute("getAllContacts", contactsRepository.findByUsername(username));
 		model.addAttribute("getGroupList", messagingDao.getGroupList(username));
 		model.addAttribute("top1Group", messagingDao.getTop1Group(username));
+		req.getSession().setAttribute("userDetials", userProfileRepository.findByUsername(username));
 		return "groupMessage";
 	}
 
@@ -244,7 +217,6 @@ public class MessagesController {
 		groups.setCreatedBy(username);
 		groups.setTimestamp(currentTime);
 		groups = groupsRepository.save(groups);
-		System.out.println("==+===" + groups);
 		String mobile[] = req.getParameterValues("mobile");
 		for (int i = 0; i < mobile.length; i++) {
 			System.out.println("mobile===" + mobile[i]);
@@ -262,7 +234,6 @@ public class MessagesController {
 		String username = req.getUserPrincipal().getName();
 		model.addAttribute("username", username);
 		String groupId = req.getParameter("groupId");
-		System.out.println("groupId=====" + groupId);
 		model.addAttribute("groupMessageData", messagingDao.getGroupMessageData(groupId));
 		model.addAttribute("top1Group", messagingDao.getTop1Group(username));
 		return "getGroupMessage";
@@ -278,7 +249,6 @@ public class MessagesController {
 		groupMessages.setTimestamp(currentTime);
 		groupMessages.setFromUsername(username);
 		groupMessages.setFlag("1");
-		System.out.println("===" + groupMessages.getTextMessage());
 		groupMessagesRepository.save(groupMessages);
 		return 1;
 	}
@@ -287,7 +257,6 @@ public class MessagesController {
 	@RequestMapping(value = "/getGroupMessageData")
 	public List<Map<String, Object>> getGroupMessageData(HttpServletRequest req, Model model) {
 		String groupId = req.getParameter("groupId");
-		System.out.println("groupId==" + groupId);
 		return messagingDao.getGroupMessageData(groupId);
 	}
 
@@ -296,10 +265,16 @@ public class MessagesController {
 	public List<Map<String, Object>> groupMessageListener(HttpServletRequest req, Model model) {
 		String username = req.getUserPrincipal().getName();
 		String groupId = req.getParameter("groupId");
-		// System.out.println("groupId=="+groupId);
 		List<Map<String, Object>> getLatestGroupMessage = messagingDao.getLatestGroupMessage(groupId, "1", username);
-		// System.out.println("getLatestGroupMessage----"+getLatestGroupMessage);
 		return getLatestGroupMessage;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/countUnreadGroupMsg")
+	public List<Map<String, Object>> countUnreadGroupMsg(HttpServletRequest req, Model model) {
+		String username = req.getUserPrincipal().getName();
+		return messagingDao.countUnreadGroupMsg(username);
+	}
+
 
 }

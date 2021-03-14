@@ -47,7 +47,6 @@
 			$(document).on("click", "#sendBtn", function() {
 				var textMessage = $("#textMessage").val();
 				if(textMessage != ''){
-					console.log("textMessage===" + textMessage);
 				  	$.get("addMessage",
 							  {
 						toFullname: "${contactDetails.to_fullname}",
@@ -71,16 +70,6 @@
 			  .done(function( data ) {
 				  $("#showMessage").html(data);
 			  }); 
-			 
-			  
-			 /*  $.get( "getNewMessagesTexts", { tousername: "${contactDetails.to_mobile}"} )
-			  .done(function( data ) {
-				  $.each(data, function (index, itemData) { 
-					  console.log("===="+itemData.text_message);
-					});
-			  });  */
-			   
-				  
 		}
 	</script>
 </body>
