@@ -148,7 +148,11 @@
 					 $.get( "countUnreadGroupMsg")
 					  .done(function( data ) {
 						  $.each(data, function (index, itemData) {
-							   $("#messageCountValue"+itemData.group_id).html(itemData.count);
+								var isActive = $("#activeLi"+itemData.group_id).hasClass('active');
+								   if(isActive == false){
+									   $("#messageCountValue"+itemData.group_id).html(itemData.count);
+								   }
+							   
 							});
 					  }); 
 					}, 2000);

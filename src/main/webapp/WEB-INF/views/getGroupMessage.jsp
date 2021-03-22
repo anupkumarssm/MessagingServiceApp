@@ -95,6 +95,7 @@
 							getGroupMessageFunc('${top1Group.id}');
 						});
 		function getGroupId(id, name) {
+			
 			$("#groupName").html(name);
 			$("#groupId").val(id);
 			 getGroupMessageFunc(id)

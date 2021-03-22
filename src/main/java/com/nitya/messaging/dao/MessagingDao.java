@@ -15,6 +15,15 @@ public class MessagingDao {
 		try {
 			String query = "SELECT * FROM direct_messages dm where  dm.from_username=? and dm.to_username=? or dm.from_username=? and dm.to_username=?";
 			List<Map<String, Object>> listResult= jdbcTemplate.queryForList(query, username, toMobile, toMobile, username);
+			
+			
+			String sql = "SELECT * FROM direct_messages dm where 	dm.from_username=? AND dm.to_username=? and flag=1";
+			List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sql, toMobile,username);
+			 for(int i=0;i<resultList.size();i++) {
+				String updateQuery = "update direct_messages set flag=0 where id=? and flag=1";
+				jdbcTemplate.update(updateQuery, resultList.get(i).get("id").toString());
+				jdbcTemplate.update("update messages m set m.message_count=0 where m.username=? and m.to_username=?",username,toMobile);
+			}
 			return listResult;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -61,10 +70,19 @@ public class MessagingDao {
 		return null;
 	}
 
-	public List<Map<String, Object>> getGroupMessageData(String groupId) {
+	public List<Map<String, Object>> getGroupMessageData(String groupId, String flag,String username) {
 		try {
 			String query = "SELECT * FROM group_messages where group_id=?";
-			return jdbcTemplate.queryForList(query, groupId);
+			List<Map<String, Object>>  resultGroupMessageList =  jdbcTemplate.queryForList(query, groupId);
+			
+			String sqlqry = "SELECT * FROM group_messages where group_id=? and flag=? and from_username !=?";
+			List<Map<String, Object>> resultList = jdbcTemplate.queryForList(sqlqry, groupId, flag,username);
+			 for(int i=0;i<resultList.size();i++) {
+				String updateQuery = "update group_messages set flag=0 where id=? and flag=1";
+				jdbcTemplate.update(updateQuery, resultList.get(i).get("id").toString());
+			}
+			 return resultGroupMessageList;
+			 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -115,18 +133,6 @@ public class MessagingDao {
 			  String query =
 			  "update messages m set m.message_count=(m.message_count+1) where m.username=? and m.to_username=?"
 			  ; jdbcTemplate.update(query, toUsername,fromUsername);
-			 
-			/*
-			 * int count=1; String query1 =
-			 * "select m.message_count from messages m where m.username=? and m.to_username=?"
-			 * ; String msgCount = (String) jdbcTemplate.queryForObject(query1, new Object[]
-			 * { fromUsername,toUsername }, String.class);
-			 * System.out.println("===="+msgCount); count =
-			 * count+Integer.parseInt(msgCount); String query =
-			 * "update messages m set m.message_count="
-			 * +count+" where m.username=? and m.to_username=?"; jdbcTemplate.update(query,
-			 * fromUsername,toUsername);
-			 */
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

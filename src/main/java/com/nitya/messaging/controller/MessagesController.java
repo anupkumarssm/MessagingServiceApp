@@ -155,7 +155,13 @@ public class MessagesController {
 		directMessages.setTimestamp(currentTime);
 		directMessages.setFlag("1");
 		directMessagesRepository.save(directMessages);
-		return 1;
+		int status=0;
+		String toMobile = messages.getToMobile().trim();
+		if(toMobile.equals(username))
+			status = 0;
+		else
+			status = 1;
+		return status;
 	}
 
 	@RequestMapping(value = "/getUpdatedMessage")
@@ -206,6 +212,8 @@ public class MessagesController {
 		model.addAttribute("getGroupList", messagingDao.getGroupList(username));
 		model.addAttribute("top1Group", messagingDao.getTop1Group(username));
 		req.getSession().setAttribute("userDetials", userProfileRepository.findByUsername(username));
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		messagingDao.updateTime(username, sdf.format(timestamp));
 		return "groupMessage";
 	}
 
@@ -234,7 +242,7 @@ public class MessagesController {
 		String username = req.getUserPrincipal().getName();
 		model.addAttribute("username", username);
 		String groupId = req.getParameter("groupId");
-		model.addAttribute("groupMessageData", messagingDao.getGroupMessageData(groupId));
+		model.addAttribute("groupMessageData", messagingDao.getGroupMessageData(groupId,"1", username));
 		model.addAttribute("top1Group", messagingDao.getTop1Group(username));
 		return "getGroupMessage";
 	}
@@ -256,8 +264,9 @@ public class MessagesController {
 	@ResponseBody
 	@RequestMapping(value = "/getGroupMessageData")
 	public List<Map<String, Object>> getGroupMessageData(HttpServletRequest req, Model model) {
+		String username = req.getUserPrincipal().getName();
 		String groupId = req.getParameter("groupId");
-		return messagingDao.getGroupMessageData(groupId);
+		return messagingDao.getGroupMessageData(groupId,"1", username);
 	}
 
 	@ResponseBody
